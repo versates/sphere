@@ -1,0 +1,51 @@
+#!/bin/bash
+SOURCE="${BASH_SOURCE[0]}"
+
+while [ -h "$SOURCE" ]; do
+  DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+
+export SPHERE_HOME="$(cd -P "$(dirname "$SOURCE")" && cd .. && pwd)"
+
+[ -f "$SPHERE_HOME/etc/env" ] || cp -a "$SPHERE_HOME/etc/env.example" "$SPHERE_HOME/etc/env"
+
+source "$SPHERE_HOME/etc/env"
+
+if [ -z "$SPHERE_WEB_HOME" ]; then
+  SPHERE_WEB_HOME="${SPHERE_HOME}/../website/src"
+  [ -d "$SPHERE_WEB_HOME" ] || mkdir -p "$SPHERE_WEB_HOME"
+  export SPHERE_WEB_HOME=$(cd -P $SPHERE_WEB_HOME && pwd)
+fi
+
+[ -d "$SPHERE_WEB_HOME/public" ] || mkdir "$SPHERE_WEB_HOME/public"
+
+alias docker-compose="docker-compose -p sphere"
+cd $SPHERE_HOME/var
+
+case "$1" in
+  start)
+    docker-compose up -d
+    ;;
+  stop)
+    docker-compose stop
+    ;;
+  build)
+    docker-compose build
+    ;;
+  cleanup)
+    docker-compose down
+    ;;
+  logs)
+    docker-compose logs
+    ;;
+  status)
+    docker-compose ps
+    ;;    
+  *)
+    echo -e "Usage:\n\t$(basename $0) start|stop|status|build|cleanup|logs"
+    ;;
+esac
+
+exit 0

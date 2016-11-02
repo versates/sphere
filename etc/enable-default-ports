@@ -1,0 +1,4 @@
+sudo pfctl -d > /dev/null 2>&1
+
+echo -e "\nrdr pass inet proto tcp from any to any port 80 -> 127.0.0.1 port 8000
+rdr pass inet proto tcp from any to any port 443 -> 127.0.0.1 port 9443\n" | sudo pfctl -ef - > /dev/null 2>&1

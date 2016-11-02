@@ -1,0 +1,51 @@
+version: '2'
+services:
+  redis:
+    container_name: sphere-redis
+    cgroup_parent: sphere
+    image: redis:3.2
+    ports:
+      - ${SPHERE_CACHE_PORT}:6379
+
+  db:
+    container_name: sphere-db
+    cgroup_parent: sphere
+    build: ./db
+    image: sphere-db
+    ports:
+      - ${SPHERE_DB_PORT}:5432
+    environment:
+      - POSTGRES_PASSWORD=${SPHERE_DB_MASTERPASS}
+      - SPHERE_DB_ROLE=${SPHERE_DB_ROLE}
+      - SPHERE_DB_USER=${SPHERE_DB_USER}
+      - SPHERE_DB_PASSWORD=${SPHERE_DB_PASSWORD}
+
+  php:
+    container_name: sphere-php
+    cgroup_parent: sphere
+    build: ./php
+    image: sphere-php
+    volumes:
+      - ${SPHERE_WEB_HOME}:/var/sphere
+      - ./log:/var/log/sphere
+      - ./ssl:/etc/ssl/private
+    ports:
+      - ${SPHERE_XDEBUG_PORT}:9000
+    links:
+      - db
+      - redis
+
+  web:
+    container_name: sphere-web
+    cgroup_parent: sphere
+    image: nginx:1.11
+    ports:
+      - ${SPHERE_HTTP_PORT}:80
+      - ${SPHERE_HTTPS_PORT}:443
+    volumes:
+      - ./nginx/site.conf:/etc/nginx/conf.d/default.conf
+    volumes_from:
+      - php
+    links:
+      - php
+
