@@ -24,7 +24,7 @@ server {
     fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
   }
 
-  location ~ /(\.ht|web\.config|\.git) {
+  location ~ /(\.ht|web\.config|\.git.*|.*\.iml) {
     deny all;
     return 404;
   }
