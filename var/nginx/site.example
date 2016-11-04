@@ -1,9 +1,9 @@
 server {
   listen       80 default;
   server_name  _;
-  root         /var/www/public;
-  access_log   /var/www/logs/access.log;
-  error_log    /var/www/logs/error.log;
+  root         /var/sphere/www;
+  access_log   /var/log/sphere/access.log;
+  error_log    /var/log/sphere/error.log;
   rewrite_log  on;
   index        index.php index.html;
   charset      utf-8;

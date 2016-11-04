@@ -14,12 +14,12 @@ export SPHERE_HOME="$(cd -P "$(dirname "$SOURCE")" && cd .. && pwd)"
 source "$SPHERE_HOME/etc/env"
 
 if [ -z "$SPHERE_WEB_HOME" ]; then
-  SPHERE_WEB_HOME="${SPHERE_HOME}/../website/src"
+  SPHERE_WEB_HOME="${SPHERE_HOME}/../website"
   [ -d "$SPHERE_WEB_HOME" ] || mkdir -p "$SPHERE_WEB_HOME"
   export SPHERE_WEB_HOME=$(cd -P $SPHERE_WEB_HOME && pwd)
 fi
 
-[ -d "$SPHERE_WEB_HOME/public" ] || mkdir "$SPHERE_WEB_HOME/public"
+[ -d "$SPHERE_WEB_HOME/www" ] || mkdir "$SPHERE_WEB_HOME/www"
 
 alias docker-compose="docker-compose -p sphere"
 cd $SPHERE_HOME/var
